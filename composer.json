@@ -1,0 +1,52 @@
+{
+	"name" : "muckiware/muckisafe-plugin",
+	"description" : "Muckiware MuckiSafe Plugin for Shopware 6 - extension for MuckiSafe instances, used together with muckiware/facility-plugin",
+	"version": "v0.1.0",
+	"keywords": [
+		"shopware6",
+		"muckisafe",
+		"backup",
+		"plugin"
+	],
+	"type" : "shopware-platform-plugin",
+	"license" : "MIT",
+	"authors": [
+		{
+			"name": "muckiware"
+		}
+	],
+	"extra" : {
+		"shopware-plugin-class" : "MuckiSafePlugin\\MuckiSafePlugin",
+		"copyright" : "(c) by muckiware",
+		"label" : {
+			"de-DE" : "Mucki Safe Erweiterung",
+			"en-GB" : "Mucki Safe Plugin"
+		}
+	},
+	"require" : {
+		"php" : "~8.3.0 || ~8.4.0 || ~8.5.0",
+		"shopware/core": "~6.6.10.14 || ~6.7.6.0"
+	},
+	"require-dev" : {
+		"phpstan/phpstan" : "*"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"MuckiSafePlugin\\" : "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"MuckiSafePlugin\\tests\\" : "tests/"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"symfony/runtime": true,
+			"php-http/discovery": false
+		}
+	},
+	"scripts": {
+		"phpstan": "./vendor/bin/phpstan analyse -n --no-progress"
+	}
+}
