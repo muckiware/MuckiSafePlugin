@@ -16,6 +16,7 @@ use MuckiFacilityPlugin\Schedule\ScheduleCalculator;
 class BackupPlanBuilder
 {
     public const ESTIMATED_DURATION_SECONDS = 1800;
+    public const MIN_DURATION_SECONDS = 60;
     public const MAX_OCCURRENCES = 1440;
     public const LOCKED_STATUSES = ['queued', 'running'];
 
@@ -59,7 +60,9 @@ class BackupPlanBuilder
         \DateTimeImmutable $windowEnd
     ): array {
         $estimated = $row->maxDurationSeconds === null;
-        $duration = $row->maxDurationSeconds ?? self::ESTIMATED_DURATION_SECONDS;
+        $duration = $estimated
+            ? self::ESTIMATED_DURATION_SECONDS
+            : max(self::MIN_DURATION_SECONDS, (int)$row->maxDurationSeconds);
 
         $valid = true;
         $occurrences = [];

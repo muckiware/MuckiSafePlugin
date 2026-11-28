@@ -92,6 +92,16 @@ class BackupPlanBuilderTest extends TestCase
         static::assertNull($item['startTime']);
     }
 
+    public function testZeroDurationMidnightRunIsIncluded(): void
+    {
+        $item = $this->item($this->row('0 0 * * *', 0));
+
+        static::assertSame(60, $item['durationSeconds']);
+        static::assertFalse($item['durationEstimated']);
+        static::assertCount(1, $item['occurrences']);
+        static::assertSame('2026-11-26T23:00:00+00:00', $item['occurrences'][0]['start']);
+    }
+
     public function testMissingDurationFallsBackToEstimate(): void
     {
         $item = $this->item($this->row('0 2 * * *', null, 0));
