@@ -91,10 +91,11 @@
             :style="trackStyle"
             @pointermove="onPointerMove"
             @pointerup="onPointerUp"
-            @pointercancel="onPointerUp"
+            @pointercancel="onPointerCancel"
+            @lostpointercapture="onPointerCancel"
         >
             <div
-                v-for="(segment, segmentIndex) in itemSegments(item)"
+                v-for="(segment, segmentIndex) in item.segments"
                 :key="segmentIndex"
                 class="muckisafe-backup-plan-timeline__block"
                 :class="blockClasses(item, itemIndex)"

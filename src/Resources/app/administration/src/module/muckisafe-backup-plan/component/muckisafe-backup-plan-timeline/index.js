@@ -1,6 +1,6 @@
 import template from './muckisafe-backup-plan-timeline.html.twig';
 import './muckisafe-backup-plan-timeline.scss';
-import { clipSegments, dailyOccurrences, formatWallTime, snapMinute } from '../../helper/timeline-math';
+import { formatWallTime, snapMinute } from '../../helper/timeline-math';
 
 const { Component } = Shopware;
 
@@ -16,7 +16,9 @@ const COLOR_COUNT = 4;
 /**
  * Gantt style day timeline of the backup plan: a "Load" row with the conflict zones, then one row
  * per backup with its toggle, label and blocks. Pure view component: it never changes the items,
- * it emits `move` (drag/arrow keys on a daily block) and `toggle` (switch) for the page.
+ * it emits `move` (live while dragging and on arrow keys) and `toggle` (switch) for the page.
+ * During a drag the page updates the item from each `move`, so blocks follow the props; the
+ * local drag state only tracks the pointer and the tooltip.
  *
  * Usage:
  * <muckisafe-backup-plan-timeline :items="viewItems" :conflicts="conflicts" :day-length="dayLength"
@@ -75,6 +77,18 @@ Component.register('muckisafe-backup-plan-timeline', {
         this.V6_5_0_0 = this.feature.isActive('V6_5_0_0') && !this.V6_6_0_0;
     },
 
+    beforeUnmount() {
+        this.endDrag();
+    },
+
+    watch: {
+        itemIds(ids) {
+            if (this.drag !== null && !ids.includes(this.drag.repositoryId)) {
+                this.endDrag();
+            }
+        },
+    },
+
     computed: {
         isV6600() {
             return this.V6_6_0_0;
@@ -103,6 +117,10 @@ Component.register('muckisafe-backup-plan-timeline', {
             labels.push({ minute: this.dayLength, label: '24' });
 
             return labels;
+        },
+
+        itemIds() {
+            return this.items.map((item) => item.repositoryId);
         },
 
         itemNames() {
@@ -140,18 +158,6 @@ Component.register('muckisafe-backup-plan-timeline', {
             return this.drag !== null && this.drag.repositoryId === item.repositoryId;
         },
 
-        currentStartMinute(item) {
-            return this.isDragging(item) ? this.drag.minute : item.startMinute;
-        },
-
-        itemSegments(item) {
-            if (!this.isDragging(item)) {
-                return item.segments;
-            }
-
-            return clipSegments(dailyOccurrences(this.drag.minute, item.durationMinutes, this.dayLength), this.dayLength);
-        },
-
         positionStyle(from, to) {
             return {
                 left: `${(from / this.dayLength) * 100}%`,
@@ -185,9 +191,8 @@ Component.register('muckisafe-backup-plan-timeline', {
         },
 
         startLabel(item) {
-            const startMinute = this.currentStartMinute(item);
-            if (item.daily && startMinute !== null) {
-                return formatWallTime(this.windowStart, startMinute, this.timezone);
+            if (item.daily && item.startMinute !== null) {
+                return formatWallTime(this.windowStart, item.startMinute, this.timezone);
             }
 
             return item.cronExpression;
@@ -247,7 +252,7 @@ Component.register('muckisafe-backup-plan-timeline', {
         },
 
         onPointerMove(event) {
-            if (this.drag === null || event.pointerId !== this.drag.pointerId) {
+            if (!this.isActivePointer(event)) {
                 return;
             }
             const width = this.drag.track.getBoundingClientRect().width;
@@ -255,20 +260,46 @@ Component.register('muckisafe-backup-plan-timeline', {
                 return;
             }
             const delta = ((event.clientX - this.drag.originX) / width) * this.dayLength;
-            this.drag.minute = snapMinute(this.drag.originMinute + delta, this.dayLength, GRID_MINUTES);
+            const minute = snapMinute(this.drag.originMinute + delta, this.dayLength, GRID_MINUTES);
+            if (minute === this.drag.minute) {
+                return;
+            }
+            this.drag.minute = minute;
+            this.$emit('move', this.drag.repositoryId, minute);
         },
 
         onPointerUp(event) {
-            if (this.drag === null || event.pointerId !== this.drag.pointerId) {
+            if (this.isActivePointer(event)) {
+                this.endDrag();
+            }
+        },
+
+        /**
+         * Pointer cancelled or capture lost without a pointerup: revert the live moves.
+         */
+        onPointerCancel(event) {
+            if (!this.isActivePointer(event)) {
                 return;
             }
-            const { repositoryId, originMinute, minute, track } = this.drag;
-            if (track.hasPointerCapture(event.pointerId)) {
-                track.releasePointerCapture(event.pointerId);
+            const { repositoryId, originMinute, minute } = this.drag;
+            this.endDrag();
+            if (minute !== originMinute) {
+                this.$emit('move', repositoryId, originMinute);
             }
+        },
+
+        isActivePointer(event) {
+            return this.drag !== null && event.pointerId === this.drag.pointerId;
+        },
+
+        endDrag() {
+            if (this.drag === null) {
+                return;
+            }
+            const { track, pointerId } = this.drag;
             this.drag = null;
-            if (event.type === 'pointerup' && minute !== originMinute) {
-                this.$emit('move', repositoryId, minute);
+            if (track.hasPointerCapture(pointerId)) {
+                track.releasePointerCapture(pointerId);
             }
         },
 
