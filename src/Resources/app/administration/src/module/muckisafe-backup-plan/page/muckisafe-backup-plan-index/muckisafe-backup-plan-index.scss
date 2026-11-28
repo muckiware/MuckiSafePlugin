@@ -1,4 +1,11 @@
 .muckisafe-backup-plan-index {
+    // The timeline needs the whole content width; sw-card (6.6) and mt-card (6.7)
+    // cap cards at 60rem / 83rem by default.
+    .muckisafe-backup-plan-index__card.sw-card,
+    .muckisafe-backup-plan-index__card.mt-card {
+        max-width: none;
+    }
+
     &__header {
         display: flex;
         flex-wrap: wrap;

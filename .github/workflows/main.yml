@@ -84,8 +84,13 @@ jobs:
       - name: "Install DEV-Tools"
         working-directory: custom/plugins/${{ env.MODULE_NAME }}
         run: |
-          composer remove shopware/* --no-update
+          # muckiware/facility-plugin is installed into the Shopware project instead (see below),
+          # so that Shopware registers it as a plugin
+          composer remove shopware/* muckiware/facility-plugin --no-update
           composer install
+
+      - name: "Install required plugins"
+        run: composer req muckiware/facility-plugin:^0.11.3
 
       - name: "Install code-Tools"
         run: composer req phpunit/phpunit:^9.5 phpstan/phpstan

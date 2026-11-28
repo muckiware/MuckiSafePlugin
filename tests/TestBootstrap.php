@@ -32,7 +32,7 @@ echo 'DATABASE_URL: '.getenv('DATABASE_URL')."\n";
 echo '$testProjectDir: '.$testProjectDir."\n";
 $loader = (new TestBootstrapper())
     ->addCallingPlugin()
-    ->addActivePlugins('MuckiSafePlugin')
+    ->addActivePlugins('MuckiFacilityPlugin', 'MuckiSafePlugin')
     ->setDatabaseUrl(getenv('TEST_DATABASE_URL'))
     ->setForceInstallPlugins(true)
     ->bootstrap()
