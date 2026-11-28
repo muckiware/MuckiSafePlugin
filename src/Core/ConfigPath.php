@@ -14,4 +14,5 @@ namespace MuckiSafePlugin\Core;
 enum ConfigPath: string
 {
     case CONFIG_PATH_ACTIVE = 'MuckiSafePlugin.config.active';
+    case CONFIG_PATH_SCHEDULE_BUFFER_MINUTES = 'MuckiSafePlugin.config.scheduleBufferMinutes';
 }

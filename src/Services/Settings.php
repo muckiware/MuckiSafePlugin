@@ -17,6 +17,8 @@ use MuckiSafePlugin\Core\ConfigPath;
 
 class Settings implements SettingsInterface
 {
+    public const DEFAULT_SCHEDULE_BUFFER_MINUTES = 15;
+
     public function __construct(
         protected SystemConfigService $config
     ) {
@@ -25,5 +27,12 @@ class Settings implements SettingsInterface
     public function isEnabled(): bool
     {
         return $this->config->getBool(ConfigPath::CONFIG_PATH_ACTIVE->value);
+    }
+
+    public function getScheduleBufferMinutes(): int
+    {
+        $minutes = $this->config->getInt(ConfigPath::CONFIG_PATH_SCHEDULE_BUFFER_MINUTES->value);
+
+        return $minutes > 0 ? $minutes : self::DEFAULT_SCHEDULE_BUFFER_MINUTES;
     }
 }
