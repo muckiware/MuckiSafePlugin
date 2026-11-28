@@ -5,5 +5,11 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
         </service>
         <service id="MuckiSafePlugin\Services\SettingsInterface" alias="MuckiSafePlugin\Services\Settings"/>
+        <service id="MuckiSafePlugin\Schedule\ScheduleRowReader">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+        <service id="MuckiSafePlugin\Schedule\BackupPlanBuilder">
+            <argument type="service" id="MuckiFacilityPlugin\Schedule\ScheduleCalculator"/>
+        </service>
     </services>
 </container>
