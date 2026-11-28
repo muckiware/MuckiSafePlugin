@@ -11,5 +11,10 @@
         <service id="MuckiSafePlugin\Schedule\BackupPlanBuilder">
             <argument type="service" id="MuckiFacilityPlugin\Schedule\ScheduleCalculator"/>
         </service>
+        <service id="MuckiSafePlugin\Schedule\BackupPlanWriter">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="MuckiSafePlugin\Schedule\ScheduleRowReader"/>
+            <argument type="service" id="MuckiFacilityPlugin\Schedule\ScheduleConfiguration"/>
+        </service>
     </services>
 </container>
