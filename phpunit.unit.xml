@@ -7,6 +7,7 @@
         <testsuite name="MuckiSafe Unit Tests">
             <file>tests/Services/SettingsTest.php</file>
             <directory>tests/Schedule</directory>
+            <directory>tests/Controller</directory>
         </testsuite>
     </testsuites>
 </phpunit>

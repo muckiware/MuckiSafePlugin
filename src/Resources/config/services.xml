@@ -16,5 +16,14 @@
             <argument type="service" id="MuckiSafePlugin\Schedule\ScheduleRowReader"/>
             <argument type="service" id="MuckiFacilityPlugin\Schedule\ScheduleConfiguration"/>
         </service>
+        <service id="MuckiSafePlugin\Controller\BackupPlanController" public="true">
+            <argument type="service" id="MuckiSafePlugin\Schedule\ScheduleRowReader"/>
+            <argument type="service" id="MuckiSafePlugin\Schedule\BackupPlanBuilder"/>
+            <argument type="service" id="MuckiSafePlugin\Schedule\BackupPlanWriter"/>
+            <argument type="service" id="MuckiSafePlugin\Services\SettingsInterface"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
     </services>
 </container>
