@@ -90,7 +90,13 @@ jobs:
           composer install
 
       - name: "Install required plugins"
-        run: composer req muckiware/facility-plugin:^0.11.3
+        run: |
+          composer req muckiware/facility-plugin:^0.11.3
+          # TestBootstrapper::getPluginPath() of SW <= 6.7.6 only searches custom/*plugins/*,
+          # not vendor/. Link the composer-installed plugin so that addActivePlugins() finds it.
+          # custom/static-plugins is not scanned as a local plugin dir, so it is not registered twice.
+          mkdir -p custom/static-plugins
+          ln -s ../../vendor/muckiware/facility-plugin custom/static-plugins/MuckiFacilityPlugin
 
       - name: "Install code-Tools"
         run: composer req phpunit/phpunit:^9.5 phpstan/phpstan
