@@ -44,7 +44,7 @@ class BackupPlanWriterTest extends TestCase
 
         $this->transactionConnection = $this->createMock(Connection::class);
         $this->transactionConnection->method('transactional')
-            ->willReturnCallback(static fn (\Closure $callback) => $callback($this->transactionConnection));
+            ->willReturnCallback(fn (\Closure $callback) => $callback($this->transactionConnection));
 
         $configConnection = $this->createMock(Connection::class);
         $configConnection->method('fetchOne')->willReturn(1);

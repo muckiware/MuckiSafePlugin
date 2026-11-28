@@ -44,7 +44,7 @@ class PlanChange
 
         $startTime = $data['startTime'] ?? null;
         if ($startTime !== null
-            && (!is_string($startTime) || preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $startTime) !== 1)
+            && (!is_string($startTime) || preg_match('/^([01]\d|2[0-3]):[0-5]\d$/D', $startTime) !== 1)
         ) {
             throw new PlanValidationException('"startTime" must be formatted as HH:MM.');
         }
