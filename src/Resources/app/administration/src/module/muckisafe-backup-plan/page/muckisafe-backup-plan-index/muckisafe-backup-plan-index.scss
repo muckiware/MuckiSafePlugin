@@ -1,0 +1,28 @@
+.muckisafe-backup-plan-index {
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    &__navigation {
+        display: flex;
+        gap: 8px;
+    }
+
+    &__date {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__timezone {
+        color: #52667a;
+        font-size: 12px;
+    }
+
+    &__skipped {
+        margin: 12px 0 0 20px;
+    }
+}

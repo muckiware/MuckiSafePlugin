@@ -1,4 +1,5 @@
 import './component/muckisafe-backup-plan-timeline';
+import './page/muckisafe-backup-plan-index';
 
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';
