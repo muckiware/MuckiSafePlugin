@@ -6,7 +6,9 @@ import enGB from './snippet/en-GB.json';
 
 Shopware.Module.register('muckisafe-backup-plan', {
 
-    type: 'plugin',
+    // 'core' is required for a first-level main menu entry: the module factory drops
+    // top-level navigation entries of 'plugin' modules (same approach as muwa-facility-menu).
+    type: 'core',
     name: 'muckisafeBackupPlan',
     title: 'muckisafe-backup-plan.general.mainMenuLabel',
     description: 'muckisafe-backup-plan.general.description',
@@ -27,6 +29,17 @@ Shopware.Module.register('muckisafe-backup-plan', {
             },
         },
     },
+    navigation: [
+        {
+            id: 'muckisafe-backup-plan',
+            label: 'muckisafe-backup-plan.general.mainMenuLabel',
+            color: '#c04d01',
+            icon: 'regular-calendar',
+            path: 'muckisafe.backup.plan.index',
+            position: 15,
+            privilege: 'muwa_backup_repository.viewer',
+        },
+    ],
     settingsItem: [
         {
             name: 'muckisafe-backup-plan-index',
