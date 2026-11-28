@@ -107,6 +107,14 @@ Component.register('muckisafe-backup-plan-index', {
         this.loadPlan();
     },
 
+    mounted() {
+        window.addEventListener('beforeunload', this.onBeforeUnload);
+    },
+
+    beforeUnmount() {
+        window.removeEventListener('beforeunload', this.onBeforeUnload);
+    },
+
     beforeRouteLeave(to, from, next) {
         if (!this.hasChanges) {
             next();
@@ -117,6 +125,14 @@ Component.register('muckisafe-backup-plan-index', {
     },
 
     methods: {
+        onBeforeUnload(event) {
+            if (!this.hasChanges) {
+                return;
+            }
+            event.preventDefault();
+            event.returnValue = '';
+        },
+
         getApiHeader() {
             return {
                 Accept: 'application/vnd.api+json',

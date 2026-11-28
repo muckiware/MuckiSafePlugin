@@ -10,6 +10,7 @@
       "loadLabel": "Auslastung",
       "toggleLabel": "Zeitplan von {name} aktivieren",
       "running": "läuft",
+      "invalidSchedule": "Ungültiger Zeitplan",
       "locked": "Kein täglicher Zeitplan, Bearbeitung auf der Detailseite des Repositories",
       "durationMinutes": "{minutes} Min.",
       "durationHours": "{hours} Std.",

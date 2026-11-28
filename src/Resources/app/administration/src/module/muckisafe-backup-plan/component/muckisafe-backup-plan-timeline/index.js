@@ -198,9 +198,14 @@ Component.register('muckisafe-backup-plan-timeline', {
             return item.cronExpression;
         },
 
+        isRunning(item) {
+            return !item.editable && (item.status === 'queued' || item.status === 'running');
+        },
+
         durationLabel(item) {
-            const hours = Math.floor(item.durationMinutes / 60);
-            const minutes = Math.round(item.durationMinutes % 60);
+            const totalMinutes = Math.round(item.durationMinutes);
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
             let label = this.$t('muckisafe-backup-plan.timeline.durationMinutes', { minutes });
             if (hours > 0 && minutes > 0) {
                 label = this.$t('muckisafe-backup-plan.timeline.durationHoursMinutes', { hours, minutes });

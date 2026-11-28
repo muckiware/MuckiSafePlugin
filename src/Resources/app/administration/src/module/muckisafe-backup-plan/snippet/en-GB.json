@@ -10,6 +10,7 @@
       "loadLabel": "Load",
       "toggleLabel": "Enable schedule of {name}",
       "running": "running",
+      "invalidSchedule": "Invalid schedule",
       "locked": "Not a daily schedule, edit it on the repository detail page",
       "durationMinutes": "{minutes} min",
       "durationHours": "{hours} h",

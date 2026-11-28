@@ -68,13 +68,22 @@
                         :title="$t('muckisafe-backup-plan.timeline.locked')"
                     />
                     <sw-label
-                        v-if="!item.editable"
+                        v-if="isRunning(item)"
                         class="muckisafe-backup-plan-timeline__running"
                         variant="info"
                         size="small"
                         appearance="pill"
                     >
                         {{ $t('muckisafe-backup-plan.timeline.running') }}
+                    </sw-label>
+                    <sw-label
+                        v-else-if="!item.editable"
+                        class="muckisafe-backup-plan-timeline__invalid"
+                        variant="warning"
+                        size="small"
+                        appearance="pill"
+                    >
+                        {{ $t('muckisafe-backup-plan.timeline.invalidSchedule') }}
                     </sw-label>
                 </div>
                 <div class="muckisafe-backup-plan-timeline__sub">
