@@ -131,7 +131,14 @@ Component.register('muckisafe-backup-plan-index', {
             return detail || exception?.message || String(exception);
         },
 
+        /**
+         * Drops the current plan and all local changes before loading, so a failed load never
+         * leaves changes or a plan of another day (or discarded changes) that could be saved.
+         */
         async loadPlan() {
+            this.plan = null;
+            this.viewItems = [];
+            this.changes = {};
             this.isLoading = true;
             try {
                 const response = await this.httpClient.get(API_PATH, {

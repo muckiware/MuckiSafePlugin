@@ -11,7 +11,7 @@
     <template #smart-bar-actions>
         <sw-button
             class="muckisafe-backup-plan-index__discard"
-            :disabled="!hasChanges || isLoading || isSaving"
+            :disabled="(!hasChanges && plan !== null) || isLoading || isSaving"
             @click="onDiscard"
         >
             {{ $tc('muckisafe-backup-plan.actions.discard') }}
