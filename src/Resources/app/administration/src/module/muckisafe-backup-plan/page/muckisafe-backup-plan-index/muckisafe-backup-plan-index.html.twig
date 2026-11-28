@@ -1,0 +1,169 @@
+{% block muckisafe_backup_plan_index %}
+<sw-page class="muckisafe-backup-plan-index">
+
+    {% block muckisafe_backup_plan_index_smart_bar_header %}
+    <template #smart-bar-header>
+        <h2>{{ $tc('muckisafe-backup-plan.general.title') }}</h2>
+    </template>
+    {% endblock %}
+
+    {% block muckisafe_backup_plan_index_smart_bar_actions %}
+    <template #smart-bar-actions>
+        <sw-button
+            class="muckisafe-backup-plan-index__discard"
+            :disabled="(!hasChanges && plan !== null) || isLoading || isSaving"
+            @click="onDiscard"
+        >
+            {{ $tc('muckisafe-backup-plan.actions.discard') }}
+        </sw-button>
+        <sw-button
+            class="muckisafe-backup-plan-index__save"
+            variant="primary"
+            :is-loading="isSaving"
+            :disabled="!canEdit || !hasChanges || isLoading || isSaving"
+            @click="onSave"
+        >
+            {{ $tc('muckisafe-backup-plan.actions.save') }}
+        </sw-button>
+    </template>
+    {% endblock %}
+
+    {% block muckisafe_backup_plan_index_content %}
+    <template #content>
+        <sw-card-view>
+            <sw-card
+                class="muckisafe-backup-plan-index__card"
+                position-identifier="muckisafe-backup-plan-index"
+                :is-loading="isLoading"
+            >
+
+                {% block muckisafe_backup_plan_index_header %}
+                <div class="muckisafe-backup-plan-index__header">
+                    <div class="muckisafe-backup-plan-index__navigation">
+                        <sw-button
+                            size="small"
+                            :disabled="isLoading || isSaving"
+                            :title="$tc('muckisafe-backup-plan.actions.previousDay')"
+                            :aria-label="$tc('muckisafe-backup-plan.actions.previousDay')"
+                            @click="onPreviousDay"
+                        >
+                            <sw-icon name="regular-chevron-left-xs" size="12px" />
+                        </sw-button>
+                        <sw-button
+                            size="small"
+                            :disabled="isLoading || isSaving || date === today"
+                            @click="onToday"
+                        >
+                            {{ $tc('muckisafe-backup-plan.actions.today') }}
+                        </sw-button>
+                        <sw-button
+                            size="small"
+                            :disabled="isLoading || isSaving"
+                            :title="$tc('muckisafe-backup-plan.actions.nextDay')"
+                            :aria-label="$tc('muckisafe-backup-plan.actions.nextDay')"
+                            @click="onNextDay"
+                        >
+                            <sw-icon name="regular-chevron-right-xs" size="12px" />
+                        </sw-button>
+                    </div>
+                    <div class="muckisafe-backup-plan-index__date">
+                        <strong>{{ dateLabel }}</strong>
+                        <span class="muckisafe-backup-plan-index__timezone">
+                            {{ $t('muckisafe-backup-plan.general.timezoneLabel', { timezone }) }}
+                        </span>
+                    </div>
+                </div>
+                {% endblock %}
+
+                {% block muckisafe_backup_plan_index_timeline %}
+                <muckisafe-backup-plan-timeline
+                    v-if="plan !== null"
+                    :items="viewItems"
+                    :conflicts="conflicts"
+                    :day-length="dayLength"
+                    :window-start="plan.windowStart"
+                    :timezone="timezone"
+                    :can-edit="canEdit && !isSaving"
+                    @move="onMove"
+                    @toggle="onToggle"
+                />
+                {% endblock %}
+            </sw-card>
+        </sw-card-view>
+
+        {% block muckisafe_backup_plan_index_conflict_modal %}
+        <sw-modal
+            v-if="showConflictModal"
+            :title="$tc('muckisafe-backup-plan.confirm.conflictsTitle')"
+            variant="small"
+            @modal-close="onCancelConflicts"
+        >
+            <p>{{ $tc('muckisafe-backup-plan.confirm.conflictsText') }}</p>
+            <ul class="muckisafe-backup-plan-index__skipped">
+                <li v-for="warning in skippedWarnings" :key="warning">{{ warning }}</li>
+            </ul>
+            <template #modal-footer>
+                <sw-button size="small" @click="onCancelConflicts">
+                    {{ $tc('muckisafe-backup-plan.actions.cancel') }}
+                </sw-button>
+                <sw-button
+                    class="muckisafe-backup-plan-index__save-anyway"
+                    size="small"
+                    variant="danger"
+                    @click="onConfirmConflicts"
+                >
+                    {{ $tc('muckisafe-backup-plan.actions.saveAnyway') }}
+                </sw-button>
+            </template>
+        </sw-modal>
+        {% endblock %}
+
+        {% block muckisafe_backup_plan_index_unsaved_modal %}
+        <sw-modal
+            v-if="showUnsavedModal"
+            :title="$tc('muckisafe-backup-plan.confirm.unsavedTitle')"
+            variant="small"
+            @modal-close="closeUnsavedModal"
+        >
+            <p>{{ $tc('muckisafe-backup-plan.confirm.unsavedText') }}</p>
+            <template #modal-footer>
+                <sw-button size="small" @click="closeUnsavedModal">
+                    {{ $tc('muckisafe-backup-plan.actions.cancel') }}
+                </sw-button>
+                <sw-button size="small" @click="onUnsavedDiscard">
+                    {{ $tc('muckisafe-backup-plan.actions.discard') }}
+                </sw-button>
+                <sw-button
+                    size="small"
+                    variant="primary"
+                    :disabled="!canEdit"
+                    @click="onUnsavedSave"
+                >
+                    {{ $tc('muckisafe-backup-plan.actions.save') }}
+                </sw-button>
+            </template>
+        </sw-modal>
+        {% endblock %}
+
+        {% block muckisafe_backup_plan_index_leave_modal %}
+        <sw-modal
+            v-if="showLeaveModal"
+            :title="$tc('muckisafe-backup-plan.confirm.unsavedTitle')"
+            variant="small"
+            @modal-close="onLeaveCancel"
+        >
+            <p>{{ $tc('muckisafe-backup-plan.confirm.leaveText') }}</p>
+            <template #modal-footer>
+                <sw-button size="small" @click="onLeaveCancel">
+                    {{ $tc('muckisafe-backup-plan.actions.cancel') }}
+                </sw-button>
+                <sw-button size="small" variant="danger" @click="onLeaveConfirm">
+                    {{ $tc('muckisafe-backup-plan.actions.discard') }}
+                </sw-button>
+            </template>
+        </sw-modal>
+        {% endblock %}
+    </template>
+    {% endblock %}
+</sw-page>
+{% endblock %}

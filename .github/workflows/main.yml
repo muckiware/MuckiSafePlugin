@@ -84,11 +84,30 @@ jobs:
       - name: "Install DEV-Tools"
         working-directory: custom/plugins/${{ env.MODULE_NAME }}
         run: |
-          composer remove shopware/* --no-update
+          # muckiware/facility-plugin is installed into the Shopware project instead (see below),
+          # so that Shopware registers it as a plugin
+          composer remove shopware/* muckiware/facility-plugin --no-update
           composer install
 
+      - name: "Install required plugins"
+        run: |
+          composer req muckiware/facility-plugin:^0.11.3
+          # TestBootstrapper::getPluginPath() of SW <= 6.7.6 only searches custom/*plugins/*,
+          # not vendor/. Link the composer-installed plugin so that addActivePlugins() finds it.
+          # custom/static-plugins is not scanned as a local plugin dir, so it is not registered twice.
+          mkdir -p custom/static-plugins
+          ln -s ../../vendor/muckiware/facility-plugin custom/static-plugins/MuckiFacilityPlugin
+
       - name: "Install code-Tools"
-        run: composer req phpunit/phpunit:^9.5 phpstan/phpstan
+        # The Shopware test traits (e.g. DatabaseTransactionBehaviour) use PHPUnit attributes
+        # (#[Before]/#[After]), which PHPUnit 9 ignores -> no transaction rollback between tests.
+        # Use the PHPUnit major version shopware/core itself is tested with.
+        run: |
+          case "${{ matrix.shopware-versions }}" in
+            v6.6.*) PHPUNIT="^10.5" ;;
+            *)      PHPUNIT="^11.5" ;;
+          esac
+          composer req "phpunit/phpunit:${PHPUNIT}" phpstan/phpstan
 
       - name: "Install Shopware"
         run: |

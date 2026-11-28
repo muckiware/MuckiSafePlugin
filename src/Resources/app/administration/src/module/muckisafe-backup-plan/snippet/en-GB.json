@@ -1,0 +1,53 @@
+{
+  "muckisafe-backup-plan": {
+    "general": {
+      "mainMenuLabel": "Backup Planner",
+      "description": "Daily schedule of all backup repositories",
+      "title": "Backup schedule",
+      "timezoneLabel": "Times in {timezone}"
+    },
+    "timeline": {
+      "loadLabel": "Load",
+      "toggleLabel": "Enable schedule of {name}",
+      "running": "running",
+      "invalidSchedule": "Invalid schedule",
+      "locked": "Not a daily schedule, edit it on the repository detail page",
+      "durationMinutes": "{minutes} min",
+      "durationHours": "{hours} h",
+      "durationHoursMinutes": "{hours} h {minutes} min",
+      "estimateTooltip": "Estimated, no runtime measured yet",
+      "durationSamples": "max of last {count} runs",
+      "skippedWarning": "{name} will be skipped",
+      "conflictListTitle": "Conflicts"
+    },
+    "legend": {
+      "draggable": "Daily schedule (draggable)",
+      "locked": "Non-daily schedule or running (locked)",
+      "disabled": "Disabled",
+      "estimated": "No measured runtime yet",
+      "conflict": "Conflict"
+    },
+    "actions": {
+      "save": "Save",
+      "discard": "Discard",
+      "saveAnyway": "Save anyway",
+      "cancel": "Cancel",
+      "previousDay": "Previous day",
+      "nextDay": "Next day",
+      "today": "Today"
+    },
+    "confirm": {
+      "conflictsTitle": "Backups will be skipped",
+      "conflictsText": "Only one backup can run at a time. With this plan the following backups will be skipped:",
+      "unsavedTitle": "Unsaved changes",
+      "unsavedText": "You have unsaved changes. Do you want to save or discard them?",
+      "leaveText": "You have unsaved changes. Do you really want to leave this page and discard them?"
+    },
+    "notification": {
+      "saveSuccess": "Backup schedule saved.",
+      "saveError": "The backup schedule could not be saved.",
+      "lockedError": "A backup is currently running, its schedule cannot be changed right now.",
+      "loadError": "The backup schedule could not be loaded."
+    }
+  }
+}

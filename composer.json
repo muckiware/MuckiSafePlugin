@@ -1,7 +1,7 @@
 {
 	"name" : "muckiware/muckisafe-plugin",
 	"description" : "Muckiware MuckiSafe Plugin for Shopware 6 - extension for MuckiSafe instances, used together with muckiware/facility-plugin",
-	"version": "v0.1.0",
+	"version": "v0.2.0",
 	"keywords": [
 		"shopware6",
 		"muckisafe",
@@ -25,7 +25,8 @@
 	},
 	"require" : {
 		"php" : "~8.3.0 || ~8.4.0 || ~8.5.0",
-		"shopware/core": "~6.6.10.14 || ~6.7.6.0"
+		"shopware/core": "~6.7.6",
+		"muckiware/facility-plugin": "^0.11.3"
 	},
 	"require-dev" : {
 		"phpstan/phpstan" : "*"

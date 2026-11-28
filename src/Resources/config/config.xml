@@ -9,5 +9,12 @@
             <label lang="de-DE">Aktiv</label>
             <defaultValue>false</defaultValue>
         </input-field>
+        <input-field type="int">
+            <name>scheduleBufferMinutes</name>
+            <label>Backup planner buffer (minutes)</label>
+            <label lang="de-DE">Puffer Backup-Planung (Minuten)</label>
+            <defaultValue>15</defaultValue>
+            <min>0</min>
+        </input-field>
     </card>
 </config>

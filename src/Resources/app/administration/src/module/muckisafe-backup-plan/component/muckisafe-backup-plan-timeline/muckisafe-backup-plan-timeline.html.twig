@@ -1,0 +1,152 @@
+{% block muckisafe_backup_plan_timeline %}
+<div class="muckisafe-backup-plan-timeline">
+
+    {% block muckisafe_backup_plan_timeline_axis %}
+    <div class="muckisafe-backup-plan-timeline__row muckisafe-backup-plan-timeline__row--axis">
+        <div class="muckisafe-backup-plan-timeline__label"></div>
+        <div class="muckisafe-backup-plan-timeline__hours">
+            <span
+                v-for="axisLabel in axisLabels"
+                :key="axisLabel.minute"
+                class="muckisafe-backup-plan-timeline__hour"
+                :style="{ left: `${axisLabel.minute / dayLength * 100}%` }"
+            >
+                {{ axisLabel.label }}
+            </span>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block muckisafe_backup_plan_timeline_load %}
+    <div class="muckisafe-backup-plan-timeline__row muckisafe-backup-plan-timeline__row--load">
+        <div class="muckisafe-backup-plan-timeline__label">
+            <strong>{{ $t('muckisafe-backup-plan.timeline.loadLabel') }}</strong>
+        </div>
+        <div class="muckisafe-backup-plan-timeline__track" :style="trackStyle">
+            <div
+                v-for="(conflict, index) in conflicts"
+                :key="index"
+                class="muckisafe-backup-plan-timeline__zone"
+                :style="positionStyle(Math.max(conflict.zone.from, 0), Math.min(conflict.zone.to, dayLength))"
+                :title="$t('muckisafe-backup-plan.timeline.skippedWarning', { name: itemNames[conflict.skippedId] })"
+            ></div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block muckisafe_backup_plan_timeline_items %}
+    <div
+        v-for="(item, itemIndex) in items"
+        :key="item.repositoryId"
+        class="muckisafe-backup-plan-timeline__row"
+    >
+        {% block muckisafe_backup_plan_timeline_item_label %}
+        <div class="muckisafe-backup-plan-timeline__label">
+            <sw-switch-field
+                v-if="isV6600"
+                class="muckisafe-backup-plan-timeline__switch"
+                :value="item.enabled"
+                :disabled="!canEdit || !item.editable"
+                :aria-label="$t('muckisafe-backup-plan.timeline.toggleLabel', { name: item.name })"
+                @update:value="onToggle(item, $event)"
+            />
+            <sw-switch-field
+                v-if="isV6500"
+                class="muckisafe-backup-plan-timeline__switch"
+                :value="item.enabled"
+                :disabled="!canEdit || !item.editable"
+                :aria-label="$t('muckisafe-backup-plan.timeline.toggleLabel', { name: item.name })"
+                @change="onToggle(item, $event)"
+            />
+            <div class="muckisafe-backup-plan-timeline__text">
+                <div class="muckisafe-backup-plan-timeline__name">
+                    {{ item.name }}
+                    <sw-icon
+                        v-if="isLocked(item) && item.editable"
+                        name="regular-lock"
+                        size="12px"
+                        :title="$t('muckisafe-backup-plan.timeline.locked')"
+                    />
+                    <sw-label
+                        v-if="isRunning(item)"
+                        class="muckisafe-backup-plan-timeline__running"
+                        variant="info"
+                        size="small"
+                        appearance="pill"
+                    >
+                        {{ $t('muckisafe-backup-plan.timeline.running') }}
+                    </sw-label>
+                    <sw-label
+                        v-else-if="!item.editable"
+                        class="muckisafe-backup-plan-timeline__invalid"
+                        variant="warning"
+                        size="small"
+                        appearance="pill"
+                    >
+                        {{ $t('muckisafe-backup-plan.timeline.invalidSchedule') }}
+                    </sw-label>
+                </div>
+                <div class="muckisafe-backup-plan-timeline__sub">
+                    {{ startLabel(item) }} ·
+                    <span :title="durationTitle(item)">{{ durationLabel(item) }}</span>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+
+        {% block muckisafe_backup_plan_timeline_item_track %}
+        <div
+            class="muckisafe-backup-plan-timeline__track"
+            :style="trackStyle"
+            @pointermove="onPointerMove"
+            @pointerup="onPointerUp"
+            @pointercancel="onPointerCancel"
+            @lostpointercapture="onPointerCancel"
+        >
+            <div
+                v-for="(segment, segmentIndex) in item.segments"
+                :key="segmentIndex"
+                class="muckisafe-backup-plan-timeline__block"
+                :class="blockClasses(item, itemIndex)"
+                :style="positionStyle(segment.from, segment.to)"
+                :title="blockTitle(item)"
+                :tabindex="isDraggable(item) ? 0 : -1"
+                role="button"
+                :aria-label="blockTitle(item)"
+                @pointerdown="onPointerDown(item, $event)"
+                @keydown="onKeyDown(item, $event)"
+            >
+                <template v-if="item.durationEstimated">~</template>
+            </div>
+            <div
+                v-if="isDragging(item)"
+                class="muckisafe-backup-plan-timeline__drag-tooltip"
+                :style="dragTooltipStyle()"
+            >
+                {{ dragTooltipText() }}
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+    {% endblock %}
+
+    {% block muckisafe_backup_plan_timeline_legend %}
+    <div class="muckisafe-backup-plan-timeline__legend">
+        <span><i class="muckisafe-backup-plan-timeline__swatch is--draggable"></i>{{ $t('muckisafe-backup-plan.legend.draggable') }}</span>
+        <span><i class="muckisafe-backup-plan-timeline__swatch is--locked"></i>{{ $t('muckisafe-backup-plan.legend.locked') }}</span>
+        <span><i class="muckisafe-backup-plan-timeline__swatch is--disabled"></i>{{ $t('muckisafe-backup-plan.legend.disabled') }}</span>
+        <span><i class="muckisafe-backup-plan-timeline__swatch is--estimated"></i>{{ $t('muckisafe-backup-plan.legend.estimated') }}</span>
+        <span><i class="muckisafe-backup-plan-timeline__swatch is--conflict"></i>{{ $t('muckisafe-backup-plan.legend.conflict') }}</span>
+    </div>
+    {% endblock %}
+
+    {% block muckisafe_backup_plan_timeline_conflicts %}
+    <div v-if="skippedWarnings.length > 0" class="muckisafe-backup-plan-timeline__conflicts">
+        <strong>{{ $t('muckisafe-backup-plan.timeline.conflictListTitle') }}</strong>
+        <ul>
+            <li v-for="warning in skippedWarnings" :key="warning">{{ warning }}</li>
+        </ul>
+    </div>
+    {% endblock %}
+</div>
+{% endblock %}

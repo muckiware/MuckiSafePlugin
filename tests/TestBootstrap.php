@@ -31,8 +31,10 @@ $testProjectDir = getProjectDir();
 echo 'DATABASE_URL: '.getenv('DATABASE_URL')."\n";
 echo '$testProjectDir: '.$testProjectDir."\n";
 $loader = (new TestBootstrapper())
+    // Order matters: plugins are installed/activated in this order, and MuckiSafePlugin's
+    // services depend on MuckiFacilityPlugin, so the facility plugin must come first.
+    ->addActivePlugins('MuckiFacilityPlugin')
     ->addCallingPlugin()
-    ->addActivePlugins('MuckiSafePlugin')
     ->setDatabaseUrl(getenv('TEST_DATABASE_URL'))
     ->setForceInstallPlugins(true)
     ->bootstrap()
