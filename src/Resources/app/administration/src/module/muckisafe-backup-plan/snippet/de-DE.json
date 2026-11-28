@@ -1,0 +1,53 @@
+{
+  "muckisafe-backup-plan": {
+    "general": {
+      "mainMenuLabel": "Backup-Planer",
+      "description": "Tagesplan aller Backup-Repositories",
+      "title": "Backup-Zeitplan",
+      "timezoneLabel": "Zeiten in {timezone}"
+    },
+    "timeline": {
+      "loadLabel": "Auslastung",
+      "toggleLabel": "Zeitplan von {name} aktivieren",
+      "running": "läuft",
+      "invalidSchedule": "Ungültiger Zeitplan",
+      "locked": "Kein täglicher Zeitplan, Bearbeitung auf der Detailseite des Repositories",
+      "durationMinutes": "{minutes} Min.",
+      "durationHours": "{hours} Std.",
+      "durationHoursMinutes": "{hours} Std. {minutes} Min.",
+      "estimateTooltip": "Geschätzt, noch keine Laufzeit gemessen",
+      "durationSamples": "Maximum der letzten {count} Läufe",
+      "skippedWarning": "{name} wird übersprungen",
+      "conflictListTitle": "Konflikte"
+    },
+    "legend": {
+      "draggable": "Täglicher Zeitplan (verschiebbar)",
+      "locked": "Nicht täglicher Zeitplan oder laufend (gesperrt)",
+      "disabled": "Deaktiviert",
+      "estimated": "Noch keine gemessene Laufzeit",
+      "conflict": "Konflikt"
+    },
+    "actions": {
+      "save": "Speichern",
+      "discard": "Verwerfen",
+      "saveAnyway": "Trotzdem speichern",
+      "cancel": "Abbrechen",
+      "previousDay": "Vorheriger Tag",
+      "nextDay": "Nächster Tag",
+      "today": "Heute"
+    },
+    "confirm": {
+      "conflictsTitle": "Backups werden übersprungen",
+      "conflictsText": "Es kann immer nur ein Backup gleichzeitig laufen. Mit diesem Plan werden folgende Backups übersprungen:",
+      "unsavedTitle": "Ungespeicherte Änderungen",
+      "unsavedText": "Es gibt ungespeicherte Änderungen. Möchtest du sie speichern oder verwerfen?",
+      "leaveText": "Es gibt ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen und sie verwerfen?"
+    },
+    "notification": {
+      "saveSuccess": "Backup-Zeitplan gespeichert.",
+      "saveError": "Der Backup-Zeitplan konnte nicht gespeichert werden.",
+      "lockedError": "Ein Backup läuft gerade, sein Zeitplan kann momentan nicht geändert werden.",
+      "loadError": "Der Backup-Zeitplan konnte nicht geladen werden."
+    }
+  }
+}

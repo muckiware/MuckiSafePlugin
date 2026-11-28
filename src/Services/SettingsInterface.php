@@ -14,4 +14,6 @@ namespace MuckiSafePlugin\Services;
 interface SettingsInterface
 {
     public function isEnabled(): bool;
+
+    public function getScheduleBufferMinutes(): int;
 }

@@ -5,5 +5,25 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
         </service>
         <service id="MuckiSafePlugin\Services\SettingsInterface" alias="MuckiSafePlugin\Services\Settings"/>
+        <service id="MuckiSafePlugin\Schedule\ScheduleRowReader">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+        <service id="MuckiSafePlugin\Schedule\BackupPlanBuilder">
+            <argument type="service" id="MuckiFacilityPlugin\Schedule\ScheduleCalculator"/>
+        </service>
+        <service id="MuckiSafePlugin\Schedule\BackupPlanWriter">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="MuckiSafePlugin\Schedule\ScheduleRowReader"/>
+            <argument type="service" id="MuckiFacilityPlugin\Schedule\ScheduleConfiguration"/>
+        </service>
+        <service id="MuckiSafePlugin\Controller\BackupPlanController" public="true">
+            <argument type="service" id="MuckiSafePlugin\Schedule\ScheduleRowReader"/>
+            <argument type="service" id="MuckiSafePlugin\Schedule\BackupPlanBuilder"/>
+            <argument type="service" id="MuckiSafePlugin\Schedule\BackupPlanWriter"/>
+            <argument type="service" id="MuckiSafePlugin\Services\SettingsInterface"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
     </services>
 </container>
