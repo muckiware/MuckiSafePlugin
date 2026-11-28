@@ -33,6 +33,6 @@ class Settings implements SettingsInterface
     {
         $minutes = $this->config->getInt(ConfigPath::CONFIG_PATH_SCHEDULE_BUFFER_MINUTES->value);
 
-        return $minutes > 0 ? $minutes : self::DEFAULT_SCHEDULE_BUFFER_MINUTES;
+        return $minutes >= 0 ? $minutes : self::DEFAULT_SCHEDULE_BUFFER_MINUTES;
     }
 }

@@ -92,7 +92,7 @@ class BackupPlanController extends AbstractController
     protected function parseTimezone(mixed $value): \DateTimeZone
     {
         $name = ($value === null || $value === '') ? 'UTC' : $value;
-        if (!is_string($name)) {
+        if (!is_string($name) || str_contains($name, "\0")) {
             throw new BadRequestHttpException('Invalid timezone.');
         }
 

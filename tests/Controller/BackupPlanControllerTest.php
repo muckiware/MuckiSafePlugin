@@ -80,6 +80,14 @@ class BackupPlanControllerTest extends TestCase
         $this->controller->plan(new Request(['date' => '2026-11-27', 'timezone' => 'Mars/Olympus']));
     }
 
+    public function testPlanRejectsTimezoneWithNullByte(): void
+    {
+        $this->builder->expects($this->never())->method('build');
+        $this->expectException(BadRequestHttpException::class);
+
+        $this->controller->plan(new Request(['date' => '2026-11-27', 'timezone' => "Europe/Berlin\0"]));
+    }
+
     /**
      * @dataProvider invalidDates
      */

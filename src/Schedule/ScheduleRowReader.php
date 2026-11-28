@@ -43,7 +43,7 @@ class ScheduleRowReader
         }
 
         $rows = $this->connection->fetchAllAssociative(
-            $this->scheduleSql() . ' AND r.id = :id FOR UPDATE OF s',
+            $this->scheduleSql() . ' AND r.id = :id FOR UPDATE',
             ['id' => Uuid::fromHexToBytes($repositoryId)]
         );
 
